@@ -19,7 +19,7 @@ class MoviesController < ApplicationController
       redirect_to movies_path(:sort => @sort)
     end
 
-    @movies = []
+    #@movies = []
 
     Movie.find(:all, :order => @sort ? @sort : :id).each do |mv|
       @movies << mv
