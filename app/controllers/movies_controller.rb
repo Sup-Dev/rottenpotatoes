@@ -15,18 +15,36 @@ class MoviesController < ApplicationController
       @sort = session[:sort]
       redirect = true
     end
+    
+    @all_ratings = Movie.all_ratings
+    @ratings = { }
+
+    if params[:ratings]
+      @ratings = params[:ratings]
+    elsif session[:ratings]
+      @ratings = session[:ratings]
+      redirect = true
+    else
+      @all_ratings.each do |rate|
+        @ratings[rate] = 1
+      end
+      redirect = true
+    end 
 
     if redirect
-      redirect_to movies_path(:sort => @sort)
+      redirect_to movies_path(:sort => @sort, :ratings => @ratings)
     end
 
     @movies = []
 
     Movie.find(:all, :order => @sort ? @sort : :id).each do |mv|
-      @movies << mv
+      if @ratings.keys.include? mv[:rating]
+        @movies << mv
+      end
     end
 
     session[:sort] = @sort
+    session[:ratings] = @ratings
   end
 
   def new
