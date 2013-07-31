@@ -8,11 +8,12 @@ class MoviesController < ApplicationController
 
   def index
     redirect = false
-    #@sort_title = Movie.find(:all, :order => "title")
-    #@sort_date = Movie.find(:all, :order => "release_date")
-    
+        
     if params[:sort]
       @sort = params[:sort]
+    elsif session[:sort]
+      @sort = session[:sort]
+      redirect = true
     end
 
     if redirect
@@ -24,6 +25,8 @@ class MoviesController < ApplicationController
     Movie.find(:all, :order => @sort ? @sort : :id).each do |mv|
       @movies << mv
     end
+
+    session[:sort] = @sort
   end
 
   def new
